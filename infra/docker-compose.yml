@@ -2,15 +2,23 @@ version: '3.3'
 services:
 
   db:
-    image: postgres:13.0-alpine
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    image: postgres:14
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - .env
 
   backend:
-    image: evstigneefff/test
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_PORT}
+    build:
+      context: ../backend/foodgram
+      dockerfile: Dockerfile
+       
     restart: always
+    command: "gunicorn foodgram.wsgi:application --bind 0.0.0.0:${BACKEND_PORT}"
     volumes:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
@@ -20,7 +28,7 @@ services:
       - .env
 
   frontend:
-    image: evstigneefff/test
+    image: evstigneefff/frontend
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:

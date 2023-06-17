@@ -11,7 +11,13 @@ SECRET_KEY = 'xo%y2@8)mhw*!-@q+hgx)c00+jvj)z6_(5k6t)&oe$0%&mo4hr'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    'backend',
+    'testserver',
+]
 
 
 INSTALLED_APPS = [
@@ -105,9 +111,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "ru"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 

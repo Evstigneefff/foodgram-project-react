@@ -10,7 +10,7 @@ services:
 
   backend:
     ports: 
-      - ${BACKEND_PORT}:${BACKEND_PORT}
+      - '8000:8000'
     image: evstigneefff/backendtest
     restart: always
     volumes:

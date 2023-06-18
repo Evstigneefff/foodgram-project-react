@@ -26,10 +26,8 @@ class CustomUserSerializer(UserSerializer):
                   'last_name', 'is_subscribed')
 
     def get_is_subscribed(self, obj):
-        user_id = obj.id if isinstance(obj, User) else obj.author.id
         request_user = self.context.get('request').user.id
-        return Subscription.objects.filter(author=user_id,
-                                           user=request_user).exists()
+        return obj.subscribers.filter(user=request_user).exists()
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -51,10 +49,8 @@ class SubscriptionSerializer(serializers.ModelSerializer):
                   'last_name', 'is_subscribed', 'recipes_count', 'recipes')
 
     def get_is_subscribed(self, obj):
-        user_id = obj.id if isinstance(obj, User) else obj.author.id
         request_user = self.context.get('request').user.id
-        return Subscription.objects.filter(author=user_id,
-                                           user=request_user).exists()
+        return obj.subscribers.filter(user=request_user).exists()
 
     def get_recipes(self, obj):
         request = self.context.get('request')

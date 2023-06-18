@@ -1,5 +1,6 @@
 import base64
 
+import logging
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from djoser.serializers import UserSerializer
@@ -13,6 +14,9 @@ from users.models import Subscription
 User = get_user_model()
 
 
+logger=logging.getLogger()
+
+
 class CustomUserSerializer(UserSerializer):
     """Сериализатор модели User."""
     is_subscribed = serializers.SerializerMethodField()
@@ -23,10 +27,8 @@ class CustomUserSerializer(UserSerializer):
                   'last_name', 'is_subscribed')
 
     def get_is_subscribed(self, obj):
-        user_id = obj.id if isinstance(obj, User) else obj.author.id
         request_user = self.context.get('request').user.id
-        return Subscription.objects.filter(author=user_id,
-                                           user=request_user).exists()
+        return obj.subscribers.filter(user=request_user).exists()
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
@@ -41,10 +43,8 @@ class SubscriptionSerializer(serializers.ModelSerializer):
                   'last_name', 'is_subscribed', 'recipes_count', 'recipes')
 
     def get_is_subscribed(self, obj):
-        user_id = obj.id if isinstance(obj, User) else obj.author.id
         request_user = self.context.get('request').user.id
-        return Subscription.objects.filter(author=user_id,
-                                           user=request_user).exists()
+        return obj.subscribers.filter(user=request_user).exists()
 
     def get_recipes(self, obj):
         request = self.context.get('request')

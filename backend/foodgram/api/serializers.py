@@ -131,12 +131,14 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         if self.context.get('request').user.is_authenticated:
-            return obj.favorites.filter(user=self.context['request'].user).exists()
+            return obj.favorites.filter(
+                user=self.context['request'].user).exists()
         return False
 
     def get_is_in_shopping_cart(self, obj):
         if self.context.get('request').user.is_authenticated:
-            return obj.recipe_carts.filter(user=self.context['request'].user).exists()
+            return obj.recipe_carts.filter(
+                user=self.context['request'].user).exists()
         return False
 
     def create_ingredients(self, ingredients_data, recipe):
@@ -155,7 +157,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         recipe = Recipe.objects.create(**validated_data)
         for tag in tags_data:
             RecipeTag.objects.create(recipe=recipe, tag=tag)
-        self.create_ingredients(ingredients_data=ingredients_data, recipe=recipe)
+        self.create_ingredients(
+            ingredients_data=ingredients_data, recipe=recipe)
         return recipe
 
     def update(self, instance, validated_data):
@@ -168,7 +171,8 @@ class RecipeSerializer(serializers.ModelSerializer):
             instance.tags.set(tags_data)
         if ingredients_data is not None:
             IngredientAmount.objects.filter(recipe=instance).delete()
-            self.create_ingredients(ingredients_data=ingredients_data, recipe=instance)
+            self.create_ingredients(
+                ingredients_data=ingredients_data, recipe=instance)
         return instance
 
     def to_representation(self, instance):
@@ -179,8 +183,9 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class RecipeCreateSerializer(RecipeSerializer):
-    ingredients = IngredientAmountCreateSerializer(many=True, write_only=True, )
-    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
+    ingredients = IngredientAmountCreateSerializer(many=True, write_only=True)
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Tag.objects.all())
 
 
 class RecipeSubscSerializer(serializers.ModelSerializer):

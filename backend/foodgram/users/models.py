@@ -64,8 +64,10 @@ class Subscription(models.Model):
 
     def clean(self):
         if self.author == self.user:
-            raise ValidationError('Ошибка, нельзя подписываться на самого себя')
-        if Subscription.objects.filter(author=self.author, user=self.user).exists():
+            raise ValidationError(
+                'Ошибка, нельзя подписываться на самого себя')
+        if Subscription.objects.filter(
+                author=self.author, user=self.user).exists():
             raise ValidationError('Ошибка, данная подписка уже существует')
 
     def save(self, *args, **kwargs):

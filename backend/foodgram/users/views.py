@@ -31,15 +31,18 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(user)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=False, methods=['post'],
+            permission_classes=[IsAuthenticated])
     def set_password(self, request, *args, **kwargs):
         context = {'request': request}
         user = get_object_or_404(User, pk=request.user.id)
-        serializer = ChangePasswordSerializer(data=request.data, context=context)
+        serializer = ChangePasswordSerializer(
+            data=request.data, context=context)
         if serializer.is_valid(raise_exception=True):
             user.set_password(serializer.data.get('new_password'))
             user.save()
-            return Response({'status': 'password set'}, status=status.HTTP_200_OK)
+            return Response(
+                {'status': 'password set'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -51,7 +54,8 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         serializer = SubscriptionSerializer(page, context=context, many=True)
         return self.get_paginated_response(serializer.data)
 
-    @action(detail=True, methods=['post', 'delete'], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['post', 'delete'],
+            permission_classes=[IsAuthenticated])
     def subscribe(self, request, context={}, *args, **kwargs):
         context['request'] = self.request
         author = get_object_or_404(User, id=kwargs['pk'])

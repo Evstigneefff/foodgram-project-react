@@ -1,20 +1,17 @@
 import base64
-
 import logging
+
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from djoser.serializers import UserSerializer
 from rest_framework import serializers
 
 from recipes.models import (
-    Cart, Favorite, Ingredient, IngredientAmount, Recipe, RecipeTag, Tag)
-
-from users.models import Subscription
+    Ingredient, IngredientAmount, Recipe, RecipeTag, Tag)
 
 User = get_user_model()
 
-
-logger=logging.getLogger()
+logger = logging.getLogger()
 
 
 class CustomUserSerializer(UserSerializer):
@@ -59,6 +56,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
 class Base64ImageField(serializers.ImageField):
     """Сериализатор фото."""
+
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith('data:image'):
             format, imgstr = data.split(';base64,')
@@ -70,6 +68,7 @@ class Base64ImageField(serializers.ImageField):
 
 class TagSerializer(serializers.ModelSerializer):
     """Сериализатор тегов."""
+
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug')
@@ -77,6 +76,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 class IngredientSerializer(serializers.ModelSerializer):
     """Сериализатор ингредиентов."""
+
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'measurement_unit')
@@ -121,7 +121,6 @@ class RecipeSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     author = CustomUserSerializer()
 
-
     class Meta:
         model = Recipe
         fields = (
@@ -149,7 +148,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             for ingredient_data in ingredients_data
         ]
         IngredientAmount.objects.bulk_create(ingredient_amounts)
-
 
     def create(self, validated_data):
         ingredients_data = validated_data.pop('ingredients')
@@ -181,9 +179,8 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class RecipeCreateSerializer(RecipeSerializer):
-    ingredients = IngredientAmountCreateSerializer(many=True, write_only=True,)
+    ingredients = IngredientAmountCreateSerializer(many=True, write_only=True, )
     tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
-
 
 
 class RecipeSubscSerializer(serializers.ModelSerializer):

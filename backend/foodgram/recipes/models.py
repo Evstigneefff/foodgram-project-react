@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from rest_framework.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -141,6 +143,14 @@ class Favorite(models.Model):
         verbose_name="В избранном у",
     )
 
+    def clean(self):
+        if Favorite.objects.filter(user=self.user, recipe=self.recipe).exists():
+            raise ValidationError('Рецепт уже есть в избранном')
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "Избранное"
         verbose_name_plural = "Избранное"
@@ -165,6 +175,14 @@ class Cart(models.Model):
         related_name="user_carts",
         verbose_name="Владелец списка покупок",
     )
+
+    def clean(self):
+        if Cart.objects.filter(user=self.user, recipe=self.recipe).exists():
+            raise ValidationError('Рецепт уже есть в корзине')
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Список покупок"

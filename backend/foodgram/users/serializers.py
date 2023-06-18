@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
-from .models import Subscription
 from api.serializers import RecipeSubscSerializer
 
 User = get_user_model()
@@ -10,6 +10,7 @@ User = get_user_model()
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     """Сериализатор создания объеката кастомной модели User."""
+
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name',
@@ -32,9 +33,17 @@ class CustomUserSerializer(UserSerializer):
 
 class ChangePasswordSerializer(serializers.Serializer):
     """Сериализатор смены пароля кастомной модели User."""
-    model = User
     current_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+    def validate_current_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError('Your old password was entered incorrectly. ')
+        return value
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from rest_framework.exceptions import ValidationError
 
 
 class User(AbstractUser):
@@ -60,3 +61,13 @@ class Subscription(models.Model):
     def __str__(self):
         """Строковое представление модели."""
         return f"Пользователь {self.user}, подписан на  {self.author}"
+
+    def clean(self):
+        if self.author == self.user:
+            raise ValidationError('Ошибка, нельзя подписываться на самого себя')
+        if Subscription.objects.filter(author=self.author, user=self.user).exists():
+            raise ValidationError('Ошибка, данная подписка уже существует')
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)

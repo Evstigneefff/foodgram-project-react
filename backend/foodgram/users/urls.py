@@ -7,7 +7,7 @@ from users.views import CustomUserViewSet
 app_name = 'users'
 
 router = routers.DefaultRouter()
-router.register(r'users', CustomUserViewSet, basename='users')
+router.register(r'', CustomUserViewSet, basename='users')
 
 auth_urls = [
     path(r'token/login/', TokenCreateView.as_view()),

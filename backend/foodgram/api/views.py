@@ -60,19 +60,13 @@ class RecipeViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
     @action(detail=True, methods=['post', 'delete'],
             permission_classes=[IsAuthenticated])
     def favorite(self, request, context={}, *args, **kwargs):
-        context['request'] = self.request
+        context['request'] = request
         recipe = get_object_or_404(Recipe, id=kwargs['pk'])
         user = request.user
 
         if request.method == 'POST':
-            favorite, created = Favorite.objects.get_or_create(
-                recipe=recipe, user=user)
-            if not created:
-                return Response({
-                    'errors': 'Ошибка, данный рецепт уже в избранном'},
-                    status=status.HTTP_400_BAD_REQUEST)
-            serializer = RecipeSubscSerializer(
-                favorite, context=context)
+            Favorite.objects.create(recipe=recipe, user=user)
+            serializer = RecipeSubscSerializer(recipe, context=context)
             return Response(serializer.data, status.HTTP_201_CREATED)
 
         get_object_or_404(Favorite, recipe=recipe, user=user).delete()
@@ -81,19 +75,13 @@ class RecipeViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
     @action(detail=True, methods=['post', 'delete'],
             permission_classes=[IsAuthenticated])
     def shopping_cart(self, request, context={}, *args, **kwargs):
-        context['request'] = self.request
+        context['request'] = request
         recipe = get_object_or_404(Recipe, id=kwargs['pk'])
         user = request.user
 
         if request.method == 'POST':
-            cart, created = Cart.objects.get_or_create(
-                recipe=recipe, user=user)
-            if not created:
-                return Response({
-                    'errors': 'Ошибка, данный рецепт уже в списке покупок'},
-                    status=status.HTTP_400_BAD_REQUEST)
-            serializer = RecipeSubscSerializer(
-                cart, context=context)
+            Cart.objects.create(recipe=recipe, user=user)
+            serializer = RecipeSubscSerializer(recipe, context=context)
             return Response(serializer.data, status.HTTP_201_CREATED)
 
         get_object_or_404(Cart, recipe=recipe, user=user).delete()

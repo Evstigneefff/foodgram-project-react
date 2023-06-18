@@ -11,19 +11,11 @@ services:
       - .env
 
   backend:
-    ports:
-      - ${BACKEND_PORT}:${BACKEND_PORT}
-    build:
-      context: ../backend/foodgram
-      dockerfile: Dockerfile
-       
+    image: evstigneefff/backendtest
     restart: always
-    #command: "gunicorn foodgram.wsgi:application --bind 0.0.0.0:${BACKEND_PORT} --reload"
-    command: python manage.py runserver 0.0.0.0:${BACKEND_PORT}
     volumes:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
-      - ../backend/foodgram:/app
     depends_on:
       - db
     env_file:

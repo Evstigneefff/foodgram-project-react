@@ -9,12 +9,13 @@ from rest_framework.decorators import action
 from rest_framework.permissions import (
     AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
+from api.mixins import GetSerializerClassMixin
 
 from recipes.models import (
     Cart, Favorite, Ingredient, IngredientAmount, Recipe, Tag)
 from .serializers import (
     IngredientSerializer, RecipeSerializer, RecipeSubscSerializer,
-    TagSerializer)
+    TagSerializer, RecipeCreateSerializer)
 from .filters import RecipeFilter
 
 User = get_user_model()
@@ -39,18 +40,22 @@ class IngredientViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         name = self.request.GET.get('name')
         if name:
-            return Ingredient.objects.filter(
+            return self.queryset.filter(
                 name__icontains=name)
         return super().queryset
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
+class RecipeViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
     """ViewSet для модели рецептов."""
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
+    serializer_class_by_action = {
+        'create': RecipeCreateSerializer,
+        'patrial': RecipeCreateSerializer,
+    }
 
     @action(detail=True, methods=['post', 'delete'],
             permission_classes=[IsAuthenticated])

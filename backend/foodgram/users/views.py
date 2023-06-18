@@ -35,7 +35,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     def set_password(self, request, *args, **kwargs):
         self.object = get_object_or_404(User, pk=request.user.id)
         serializer = ChangePasswordSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             if not self.object.check_password(
                     serializer.data.get('current_password')):
                 return Response({'current_password': ['Wrong password.']},
@@ -75,8 +75,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST)
 
             Subscription.objects.create(author=author, user=user)
-            serializer = CustomUserSerializer(
-                User.objects.get(id=author.id), context=context)
+            serializer = CustomUserSerializer(author, context=context)
             return Response(serializer.data, status.HTTP_201_CREATED)
 
         get_object_or_404(Subscription, author=author,

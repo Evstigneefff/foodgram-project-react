@@ -11,7 +11,8 @@ class Ingredient(models.Model):
     """Модель ингредиенты."""
 
     name = models.CharField(max_length=64, verbose_name="Название")
-    measurement_unit = models.CharField(max_length=16, verbose_name="Единица измерения")
+    measurement_unit = models.CharField(
+        max_length=16, verbose_name="Единица измерения")
 
     class Meta:
         verbose_name = "Ингредиент"
@@ -25,7 +26,8 @@ class Ingredient(models.Model):
 class Tag(models.Model):
     """Модель тегов."""
 
-    name = models.CharField(unique=True, max_length=64, verbose_name="Название")
+    name = models.CharField(
+        unique=True, max_length=64, verbose_name="Название")
     color = models.CharField(unique=True, max_length=16, verbose_name="Цвет")
     slug = models.SlugField(unique=True, verbose_name="Адрес")
 
@@ -65,9 +67,11 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name="Время приготовления (в минутах)",
-        validators=[MinValueValidator(MIN_VALUE), MaxValueValidator(MAX_VALUE)],
+        validators=[
+            MinValueValidator(MIN_VALUE), MaxValueValidator(MAX_VALUE)],
     )
-    pub_date = models.DateTimeField("Дата добавления", auto_now_add=True, db_index=True)
+    pub_date = models.DateTimeField(
+        "Дата добавления", auto_now_add=True, db_index=True)
     image = models.ImageField(upload_to="recipes/", verbose_name="Картинка")
 
     class Meta:
@@ -144,7 +148,8 @@ class Favorite(models.Model):
     )
 
     def clean(self):
-        if Favorite.objects.filter(user=self.user, recipe=self.recipe).exists():
+        if Favorite.objects.filter(
+                user=self.user, recipe=self.recipe).exists():
             raise ValidationError('Рецепт уже есть в избранном')
 
     def save(self, *args, **kwargs):

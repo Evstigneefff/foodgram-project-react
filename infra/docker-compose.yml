@@ -9,6 +9,8 @@ services:
       - .env
 
   backend:
+    ports: 
+      - ${BACKEND_PORT}:${BACKEND_PORT}
     image: evstigneefff/backendtest
     restart: always
     volumes:

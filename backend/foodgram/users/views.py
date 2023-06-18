@@ -33,7 +33,6 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     @action(
         detail=False, methods=['post'], permission_classes=[IsAuthenticated])
     def set_password(self, request, *args, **kwargs):
-        '''set_password также хэширует новый пароль'''
         self.object = get_object_or_404(User, pk=request.user.id)
         serializer = ChangePasswordSerializer(data=request.data)
         if serializer.is_valid():

@@ -39,6 +39,8 @@ class Tag(models.Model):
 
 class Recipe(models.Model):
     """Модель рецептов."""
+    MIN_VALUE = 1
+    MAX_VALUE = 4320
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='recipes',
         verbose_name='Автор рецепта')
@@ -54,7 +56,7 @@ class Recipe(models.Model):
                 verbose_name='Список ингредиентов')
     cooking_time = models.PositiveSmallIntegerField(
                  verbose_name='Время приготовления (в минутах)',
-                 validators=[MinValueValidator(1), MaxValueValidator(4320)])
+                 validators=[MinValueValidator(MIN_VALUE), MaxValueValidator(MAX_VALUE)])
     pub_date = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True)
     image = models.ImageField(
@@ -93,6 +95,8 @@ class RecipeTag(models.Model):
 
 class IngredientAmount(models.Model):
     """Вспомогательная модель ИнгредиентКоличество."""
+    MIN_VALUE = 1
+    MAX_VALUE = 4320
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
@@ -105,7 +109,7 @@ class IngredientAmount(models.Model):
     )
     amount = models.IntegerField(
                  verbose_name='Количество в рецепте',
-                 validators=[MinValueValidator(1), MaxValueValidator(10000)])
+                 validators=[MinValueValidator(MIN_VALUE), MaxValueValidator(MAX_VALUE)])
 
     class Meta:
         verbose_name = 'ИнгредиентКоличество'

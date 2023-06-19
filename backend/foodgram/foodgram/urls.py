@@ -9,7 +9,7 @@ from api.views import IngredientViewSet, RecipeViewSet, TagViewSet
 router = routers.DefaultRouter()
 router.register(r'api/tags', TagViewSet, basename='tags')
 router.register(r'api/ingredients', IngredientViewSet, basename='ingredients')
-router.register(r'api/recipes/', RecipeViewSet, basename='recipes')
+router.register(r'api/recipes', RecipeViewSet, basename='recipes')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

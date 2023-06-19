@@ -11,13 +11,7 @@ SECRET_KEY = 'xo%y2@8)mhw*!-@q+hgx)c00+jvj)z6_(5k6t)&oe$0%&mo4hr'
 
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '[::1]',
-    'backend',
-    'testserver',
-]
+ALLOWED_HOSTS = ['*']
 
 
 INSTALLED_APPS = [
@@ -33,6 +27,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'django_filters',
+    'rest_framework.authtoken',
 ]
 
 
@@ -45,6 +40,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 6,
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ]
 }
 
 SIMPLE_JWT = {
@@ -91,7 +89,7 @@ DATABASES = {
         'USER': os.getenv('POSTGRES_USER', default='postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
         'HOST': os.getenv('DB_HOST', default='127.0.0.1'),
-        'PORT': os.getenv('DB_PORT', default='5432'),
+        'PORT': os.getenv('DB_PORT', default='5431'),
         'ATOMIC_REQUESTS': True
     }
 }

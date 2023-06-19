@@ -7,14 +7,13 @@ from users.views import CustomUserViewSet
 app_name = 'users'
 
 router = routers.DefaultRouter()
-router.register(r'', CustomUserViewSet, basename='users')
+router.register(r'api/users', CustomUserViewSet, basename='users')
 
 auth_urls = [
-    path(r'token/login/', TokenCreateView.as_view()),
-    path(r'token/logout/', TokenDestroyView.as_view()),
+    path(r'api/auth/token/login/', TokenCreateView.as_view()),
+    path(r'api/auth/token/logout/', TokenDestroyView.as_view()),
+    path(r'api/auth/', include('djoser.urls'))
 ]
 
-urlpatterns = [
-    path('', include(router.urls)),
-    path(r'auth/', include(auth_urls)),
-]
+urlpatterns = router.urls
+urlpatterns += auth_urls

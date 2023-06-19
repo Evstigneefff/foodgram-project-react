@@ -186,7 +186,13 @@ class RecipeCreateSerializer(RecipeSerializer):
     ingredients = IngredientAmountCreateSerializer(many=True, write_only=True)
     tags = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all())
-
+    author = serializers.CharField(required=False)
+    class Meta:
+        model = Recipe
+        fields = (
+            'id', 'tags','author', 'ingredients',
+            'name', 'text', 'cooking_time', 'is_favorited',
+            'is_in_shopping_cart', 'image')
 
 class RecipeSubscSerializer(serializers.ModelSerializer):
     """Сокращённый сериализатор для рецептов."""
@@ -194,5 +200,4 @@ class RecipeSubscSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = (
-            'id', 'name', 'cooking_time', 'image')
+        fields = ('id', 'name', 'cooking_time', 'image')

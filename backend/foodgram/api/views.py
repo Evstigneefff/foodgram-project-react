@@ -54,7 +54,7 @@ class RecipeViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
     filterset_class = RecipeFilter
     serializer_class_by_action = {
         'create': RecipeCreateSerializer,
-        'patrial': RecipeCreateSerializer,
+        'partial': RecipeCreateSerializer,
     }
 
     @action(detail=True, methods=['post', 'delete'],
@@ -92,7 +92,7 @@ class RecipeViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
         context['request'] = self.request
         user = request.user
         queryset = IngredientAmount.objects.filter(
-            recipe__carts__user=user).values(
+            recipe__recipe_carts__user=user).values(
             'ingredient__name', 'ingredient__measurement_unit').annotate(
                 total_amount=Sum('amount'))
         shopping_list = render_to_string(

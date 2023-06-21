@@ -94,13 +94,17 @@ class RecipeViewSet(GetSerializerClassMixin, viewsets.ModelViewSet):
         queryset = IngredientAmount.objects.filter(
             recipe__recipe_carts__user=user).values(
             'ingredient__name', 'ingredient__measurement_unit').annotate(
-                total_amount=Sum('amount'))
+            total_amount=Sum('amount')
+        ).order_by()
+
         shopping_list = render_to_string(
-            'shopping_list.txt', {'shopping_list': queryset})
+            'shopping_list.txt', {'shopping_list': queryset}
+        )
         shopping_list = shopping_list.strip().replace('\n\n', '\n')
         response = HttpResponse(shopping_list, content_type='text/plain')
-        response[
-            'Content-Disposition'] = 'attachment; filename="shopping_list.txt"'
+        response['Content-Disposition'] = (
+            'attachment; filename="shopping_list.txt"'
+        )
         return response
 
     def perform_create(self, serializer):

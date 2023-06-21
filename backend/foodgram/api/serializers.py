@@ -90,6 +90,8 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit')
 
+    amount = serializers.IntegerField()
+
     class Meta:
         model = IngredientAmount
         fields = ('id', 'name', 'measurement_unit', 'amount')
@@ -142,13 +144,17 @@ class RecipeSerializer(serializers.ModelSerializer):
         return False
 
     def create_ingredients(self, ingredients_data, recipe):
-        ingredient_amounts = [
-            IngredientAmount(
+        ingredient_amounts = []
+        for ingredient_data in ingredients_data:
+            if not (0 < ingredient_data['amount'] < 10000):
+                raise serializers.ValidationError(
+                    'Недопустимое значение кол-ва ингредиентов. '
+                    'Введите разумное значение')
+            ingredient_amounts.append(IngredientAmount(
                 recipe=recipe, ingredient=ingredient_data['ingredient'],
                 amount=ingredient_data['amount']
-            )
-            for ingredient_data in ingredients_data
-        ]
+            ))
+
         IngredientAmount.objects.bulk_create(ingredient_amounts)
 
     def create(self, validated_data):

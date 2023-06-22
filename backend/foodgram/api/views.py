@@ -1,22 +1,22 @@
+from api.mixins import GetSerializerClassMixin
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
+from recipes.models import (Cart, Favorite, Ingredient, IngredientAmount,
+                            Recipe, Tag)
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import (
-    AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly)
+from rest_framework.permissions import (AllowAny, IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from api.mixins import GetSerializerClassMixin
 
-from recipes.models import (
-    Cart, Favorite, Ingredient, IngredientAmount, Recipe, Tag)
-from .serializers import (
-    IngredientSerializer, RecipeSerializer, RecipeSubscSerializer,
-    TagSerializer, RecipeCreateSerializer)
 from .filters import RecipeFilter
+from .serializers import (IngredientSerializer, RecipeCreateSerializer,
+                          RecipeSerializer, RecipeSubscSerializer,
+                          TagSerializer)
 
 User = get_user_model()
 

@@ -1,7 +1,6 @@
 from django.urls import include, path
 from djoser.views import TokenCreateView, TokenDestroyView
 from rest_framework import routers
-
 from users.views import CustomUserViewSet
 
 app_name = 'users'

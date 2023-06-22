@@ -1,9 +1,8 @@
+from api.serializers import RecipeSubscSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
-
-from api.serializers import RecipeSubscSerializer
 
 User = get_user_model()
 
